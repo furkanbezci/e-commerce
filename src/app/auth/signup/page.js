@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Layout from "@/components/Layout";
 import { useRouter, useSearchParams } from "next/navigation";
+import { nextApi } from "@/lib/api";
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
@@ -58,22 +59,16 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await axios('/auth/signup/api', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await nextApi.post('/auth/signup/api',formData);
 
-      const result = await response.json();
 
-      if (response.ok) {
-        router.push('/profile');
+      if (response.status === 200) {
+        router.push(redirectTo);
       } else {
         setError(result.error || 'Kayıt başarısız');
       }
     } catch (error) {
+      console.log(error)
       setError('Bağlantı hatası. Lütfen tekrar deneyin.');
     } finally {
       setIsLoading(false);
