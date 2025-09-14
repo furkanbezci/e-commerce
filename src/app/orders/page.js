@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Layout from "@/components/Layout";
 import Toast from "@/components/ui/Toast";
 import SimplePopover from "@/components/ui/SimplePopover";
+import Link from 'next/link';
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -156,12 +157,12 @@ export default function OrdersPage() {
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz siparişiniz yok</h3>
               <p className="text-gray-600 mb-6">İlk siparişinizi vermek için alışverişe başlayın.</p>
-              <a 
+              <Link 
                 href="/products"
                 className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
               >
                 Alışverişe Başla
-              </a>
+              </Link>
             </div>
           ) : (
             <div className="space-y-6">
@@ -263,12 +264,12 @@ export default function OrdersPage() {
                         
                   <div className="px-6 py-4 bg-white border-t border-gray-200">
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <a
+                      <Link
                         href={`/orders/${order.id}`}
                         className="flex-1 bg-indigo-600 text-white text-center py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
                       >
                         Detayları Görüntüle
-                      </a>
+                      </Link>
                       {(order.status === 'Hazırlanıyor' || order.status === 'pending') && (
                         <button 
                           onClick={() => handleCancelOrder(order.id)}

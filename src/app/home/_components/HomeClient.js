@@ -106,7 +106,7 @@ export default function HomeClient({ products }) {
               Yeni Sezon Fırsatları
             </h1>
             <p className="text-xl md:text-2xl mb-8 opacity-90">
-              En sevilen markalarda %50'ye varan indirimler
+              {`En sevilen markalarda %50'ye varan indirimler`}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products" className="bg-white text-indigo-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
@@ -341,7 +341,7 @@ export default function HomeClient({ products }) {
                   </div>
                 </div>
               </div>
-              <p className="text-gray-600">"Çok hızlı kargo ve kaliteli ürünler. Kesinlikle tavsiye ederim!"</p>
+              <p className="text-gray-600">{`"Çok hızlı kargo ve kaliteli ürünler. Kesinlikle tavsiye ederim!"`}</p>
             </div>
 
             <div className="bg-gray-50 rounded-xl p-6">
@@ -360,7 +360,7 @@ export default function HomeClient({ products }) {
                   </div>
                 </div>
               </div>
-              <p className="text-gray-600">"Fiyatlar çok uygun ve müşteri hizmetleri harika. Teşekkürler!"</p>
+              <p className="text-gray-600">{`"Fiyatlar çok uygun ve müşteri hizmetleri harika. Teşekkürler!"`}</p>
             </div>
 
             <div className="bg-gray-50 rounded-xl p-6">
@@ -379,7 +379,7 @@ export default function HomeClient({ products }) {
                   </div>
                 </div>
               </div>
-              <p className="text-gray-600">"Güvenilir bir site. Alışveriş yapmaya devam edeceğim."</p>
+              <p className="text-gray-600">{`"Güvenilir bir site. Alışveriş yapmaya devam edeceğim."`}</p>
             </div>
           </div>
         </section>
