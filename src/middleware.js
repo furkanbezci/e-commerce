@@ -10,7 +10,6 @@ export function middleware(request) {
   if (!isProtected) {
     return NextResponse.next()
   }
-  debugger
   const session = request.cookies.get('session')?.value
   
   if (!session) {

@@ -23,7 +23,6 @@ export const WishlistProvider = ({ children }) => {
   }, [isLoggedIn]);
 
   const checkAuthAndLoadWishlist = async () => {
-    debugger
     try {
       const authResponse = await axios.get('/api/auth/me');
       if (authResponse.data.user) {
