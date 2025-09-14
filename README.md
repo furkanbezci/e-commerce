@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js E-Commerce Demo
 
-## Getting Started
+A minimal e-commerce prototype built on **Next.js (App Router)** with a **JSON Server** mock backend.  
+It showcases protected routes, **HttpOnly cookie–based** session checks, cart & wishlist via Context API, and centralized handling via Axios interceptors and Next.js middleware.
 
-First, run the development server:
+---
+
+## ✨ Features
+
+- **Next.js (App Router, latest)** – modern routing with server/client components.
+- **REST API** – backed by **JSON Server** for quick local development.
+- **Authentication**
+  - Session detection via **HttpOnly cookies**.
+  - `/auth/me` is used to verify authentication state.
+    
+    
+- **State Management** – **React Context API** for **Wishlist** and **Cart**.
+- **Global Handling**
+  - **Axios Interceptors**: request/response logging and **global error handling** (designed to be extended with retries, backoff, refresh logic, or centralized notifications).
+  - **Next.js `middleware.js`**: route protection & auth checks (can be expanded for role-based guards, maintenance mode, etc.).
+- Note: Social Sign-Up (Google & Facebook): _UI-only dummy placeholders_ (These buttons are **non-functional** and make **no external requests**; they exist only to demonstrate the intended UX.)
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Next.js 15+/App Router, React 19  
+- **State:** Context API (Cart, Wishlist)  
+- **Backend (mock):** JSON Server (REST)  
+- **HTTP:** Axios + Interceptors  
+- **Auth:** HttpOnly cookies
+
+---
+
+## 🚀 Installation & Running Locally
+
+Run the following commands in order:
 
 ```bash
+git clone <repo-url>
+cd <project-directory>
+npm install
+npm run json-server (necessary for services)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
