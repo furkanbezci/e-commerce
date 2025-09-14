@@ -22,32 +22,51 @@ export const WishlistProvider = ({ children }) => {
     checkAuthAndLoadWishlist();
   }, [isLoggedIn]);
 
-  const checkAuthAndLoadWishlist = async () => {
-    try {
-      const authResponse = await axios.get('/api/auth/me');
-      if (authResponse.data.user) {
-        setIsLoggedIn(true);
+const checkAuthAndLoadWishlist = async () => {
+  try {
+    const authResponse = await axios.get('/api/auth/me');
+    const loggedIn = !!authResponse.data.user;
+    setIsLoggedIn(loggedIn);
+
+    if (loggedIn) {
+      const response = await nextApi.get('/api/wishlist');
+      const apiWishlist = response.data.wishlist || [];
+
+      const pending = localStorage.getItem("pendingWishlistProduct");
+      if (pending) {
         try {
-          const response = await nextApi.get('/api/wishlist');
-          setWishlistItems(response.data.wishlist || []);
-        } catch (wishlistError) {
-          setWishlistItems([]);
-        }
-      } else {
-        setIsLoggedIn(false);
-        const savedWishlist = localStorage.getItem('wishlist');
-        if (savedWishlist) {
-          setWishlistItems(JSON.parse(savedWishlist));
+          const pendingProduct = JSON.parse(pending);
+          const isPendingProductAlreadyInApi = apiWishlist.some(item => item.id === pendingProduct.id);
+          
+          if (!isPendingProductAlreadyInApi) {
+            await nextApi.post('/api/wishlist', { product: pendingProduct });
+          }
+          localStorage.removeItem("pendingWishlistProduct");
+        } catch (err) {
+          console.error("Bekleyen ürün parse hatası:", err);
+          localStorage.removeItem("pendingWishlistProduct");
         }
       }
-    } catch (error) {
-      setIsLoggedIn(false);
+      
+      const updatedResponse = await nextApi.get('/api/wishlist');
+      setWishlistItems(updatedResponse.data.wishlist || []);
+
+    } else {
       const savedWishlist = localStorage.getItem('wishlist');
-      if (savedWishlist) {
-        setWishlistItems(JSON.parse(savedWishlist));
-      }
+      if (savedWishlist) setWishlistItems(JSON.parse(savedWishlist));
+      else setWishlistItems([]);
     }
-  };
+    return loggedIn;
+  } catch (error) {
+    console.error("Auth veya favori listesi yükleme hatası:", error);
+    setIsLoggedIn(false);
+    localStorage.removeItem("pendingWishlistProduct");
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) setWishlistItems(JSON.parse(savedWishlist));
+    else setWishlistItems([]);
+    return false;
+  }
+};
 
   const addToWishlist = async (product) => {
     if (!isLoggedIn) {
@@ -103,7 +122,7 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
-  const clearWishlist = () => {
+  const clearWishList = () => {
     setWishlistItems([]);
     localStorage.removeItem('wishlist');
   };
@@ -112,23 +131,21 @@ export const WishlistProvider = ({ children }) => {
     return wishlistItems.some(item => item.id === productId);
   };
 
-  const toggleWishlist = async (product, router) => {
-    checkAuthAndLoadWishlist()
-    if (!isLoggedIn) {
-      if (router) {
-        router.push('/auth/login?redirect=' + encodeURIComponent(window.location.pathname));
-      } else {
-        window.location.href = '/auth/login?redirect=' + encodeURIComponent(window.location.pathname);
-      }
-      return;
-    }
+const toggleWishlist = async (product, router) => {
+  const loggedIn = await checkAuthAndLoadWishlist(); 
 
-    if (isInWishlist(product.id)) {
-      await removeFromWishlist(product.id);
-    } else {
-      await addToWishlist(product);
-    }
-  };
+  if (!loggedIn) {
+    localStorage.setItem("pendingWishlistProduct", JSON.stringify(product));
+    router.push('/auth/login?redirect=' + encodeURIComponent(window.location.pathname));
+    return;
+  }
+
+  if (isInWishlist(product.id)) {
+    await removeFromWishlist(product.id);
+  } else {
+    await addToWishlist(product);
+  }
+};
 
   const toggleWishlistItem = async (product) => {
     if (isInWishlist(product.id)) {
@@ -141,17 +158,25 @@ export const WishlistProvider = ({ children }) => {
   const getTotalItems = () => {
     return wishlistItems.length;
   };
-
+const getIsLoggedIn = async () => {
+    try {
+        const authResponse = await axios.get('/api/auth/me');
+        return !!authResponse.data.user;
+    } catch {
+        return false;
+    }
+};
   const value = {
     wishlistItems,
     addToWishlist,
     removeFromWishlist,
-    clearWishlist,
+    clearWishList,
     isInWishlist,
     toggleWishlist,
     toggleWishlistItem,
     getTotalItems,
-    isLoggedIn
+    isLoggedIn,
+    getIsLoggedIn
   };
 
   return (

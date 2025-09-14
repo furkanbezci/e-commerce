@@ -4,17 +4,26 @@ import { nextApi } from '@/lib/api';
 import Layout from '@/components/Layout';
 import ProductListLayout from './_components/ProductListLayout';
 import ProductFilterPanel from './_components/ProductFilterPanel';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const searchParams = useSearchParams();
+
   const [filters, setFilters] = useState({
-    category: '',
+    category: searchParams.get('category') || '',
     minPrice: '',
     maxPrice: '',
-    search: ''
+    search: '',
+    rating: '' 
   });
+
+  useEffect(() => {
+    const newCategory = searchParams.get('category') || '';
+    setFilters(prev => ({ ...prev, category: newCategory }));
+  }, [searchParams]);
 
   useEffect(() => {
     const axiosProducts = async () => {
@@ -37,6 +46,9 @@ export default function ProductsPage() {
     if (filters.minPrice && product.price < parseFloat(filters.minPrice)) return false;
     if (filters.maxPrice && product.price > parseFloat(filters.maxPrice)) return false;
     if (filters.search && !product.title.toLowerCase().includes(filters.search.toLowerCase())) return false;
+    
+    if (filters.rating && product.rating.rate < parseFloat(filters.rating)) return false;
+
     return true;
   });
 
@@ -83,7 +95,7 @@ export default function ProductsPage() {
               categories={categories}
               filters={filters}
               onFilterChange={(key, value) => setFilters(prev => ({ ...prev, [key]: value }))}
-              onClearFilters={() => setFilters({ category: "", minPrice: "", maxPrice: "", search: "" })}
+              onClearFilters={() => setFilters({ category: "", minPrice: "", maxPrice: "", search: "", rating: "" })}
             />
           </div>
           

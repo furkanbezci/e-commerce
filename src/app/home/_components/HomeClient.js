@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,8 +11,24 @@ export default function HomeClient({ products }) {
   const [slideIndex, setSlideIndex] = useState(0);
   const [addingToCart, setAddingToCart] = useState({});
   const { addToCart } = useCart();
-  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { toggleWishlist, isInWishlist, addToWishlist, isLoggedIn,getIsLoggedIn } = useWishlist();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const pending = localStorage.getItem("pendingWishlistProduct");
+      if (pending) {
+        try {
+          const product = JSON.parse(pending);
+          addToWishlist(product);
+        } catch (err) {
+          console.error("Pending wishlist parse error:", err);
+        } finally {
+          localStorage.removeItem("pendingWishlistProduct");
+        }
+      }
+    }
+  }, [isLoggedIn, addToWishlist]);
 
   const categorizedProducts = useMemo(() => {
     const bestsellers = products.slice(0, 8);
@@ -66,9 +82,18 @@ export default function HomeClient({ products }) {
     }
   };
 
-  const handleToggleWishlist = (e, product) => {
+ const handleToggleWishlist = async (e, product) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const loggedIn = await getIsLoggedIn();
+
+    if (!loggedIn) {
+      localStorage.setItem("pendingWishlistProduct", JSON.stringify(product));
+      router.push('/auth/login?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+    
     toggleWishlist(product, router);
   };
 
@@ -100,7 +125,7 @@ export default function HomeClient({ products }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link href="/products?type=discounted" className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 border border-red-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold text-red-800">Flash Sale</h3>
+                <h3 className="text-2xl font-bold text-red-800">Flash Ürünler</h3>
                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">%70 İndirim</span>
               </div>
               <p className="text-red-700 mb-4">Saatlerce süren süper indirimler</p>

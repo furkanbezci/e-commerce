@@ -129,7 +129,7 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 py-4">
             <Link href="/home" className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              softMarket
+              Fırsatix
             </Link>
 
             <div className="flex-1 hidden md:flex">
@@ -296,32 +296,6 @@ export function Header() {
                   {category.name}
                 </Link>
 
-                {hoveredCategory === category.slug && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
-                    <div className="p-4">
-                      <h3 className="font-semibold text-gray-900 mb-3">{category.name}</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {category.subcategories.map((subcategory) => (
-                          <Link
-                            key={subcategory}
-                            href={`/products?category=${category.slug}`}
-                            className="text-sm text-gray-600 hover:text-indigo-600 py-1 px-2 rounded hover:bg-gray-50"
-                          >
-                            {subcategory}
-                          </Link>
-                        ))}
-                      </div>
-                      <div className="mt-3 pt-3 border-t border-gray-100">
-                        <Link
-                          href={`/products?category=${category.slug}`}
-                          className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                        >
-                          Tüm {category.name} Ürünleri →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>

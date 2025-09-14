@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [initialCartCheck, setInitialCartCheck] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -25,6 +26,17 @@ export default function CheckoutPage() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    
+    if (!isCheckingAuth && !initialCartCheck) {
+      if (cartItems.length === 0) {
+        
+        router.push('/cart');
+      }
+      setInitialCartCheck(true); 
+    }
+  }, [isCheckingAuth, cartItems, router, initialCartCheck]);
+
   const checkAuth = async () => {
     try {
       const response = await axios.get('/api/auth/me');
@@ -39,22 +51,14 @@ export default function CheckoutPage() {
         }));
       } else {
         router.push('/auth/login?redirect=' + encodeURIComponent('/checkout'));
-        return;
       }
     } catch (error) {
       console.log('Auth check error:', error);
       router.push('/auth/login?redirect=' + encodeURIComponent('/checkout'));
-      return;
     } finally {
       setIsCheckingAuth(false);
     }
   };
-
-  useEffect(() => {
-    if (!isCheckingAuth && cartItems.length === 0) {
-      router.push('/cart');
-    }
-  }, [cartItems, router, isCheckingAuth]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -112,7 +116,8 @@ export default function CheckoutPage() {
     );
   }
 
-  if (cartItems.length === 0) {
+  
+  if (initialCartCheck && cartItems.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
