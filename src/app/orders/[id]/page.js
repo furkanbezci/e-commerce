@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Layout from "@/components/Layout";
 import Toast from "@/components/ui/Toast";
 import SimplePopover from "@/components/ui/SimplePopover";
+import Link from 'next/link';
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -86,12 +87,12 @@ export default function OrderDetailPage() {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Sipariş Bulunamadı</h1>
             <p className="text-gray-600 mb-6">{error || 'Aradığınız sipariş bulunamadı.'}</p>
-            <a 
+            <Link 
               href="/orders"
               className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
             >
               Siparişlerime Git
-            </a>
+            </Link>
           </div>
         </div>
       </Layout>
@@ -332,18 +333,18 @@ export default function OrderDetailPage() {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">İşlemler</h3>
                 <div className="space-y-3">
-                  <a
+                  <Link
                     href="/orders"
                     className="w-full bg-indigo-600 text-white text-center py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors block"
                   >
                     Tüm Siparişlerim
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/products"
                     className="w-full bg-white text-indigo-600 text-center py-2 px-4 rounded-md border border-indigo-600 hover:bg-indigo-50 transition-colors block"
                   >
                     Alışverişe Devam Et
-                  </a>
+                  </Link>
                   {(order.status === 'Hazırlanıyor' || order.status === 'pending') && (
                     <button 
                       onClick={handleCancelOrder}
